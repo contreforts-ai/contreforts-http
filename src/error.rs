@@ -15,6 +15,7 @@ use erp_core::AdapterError;
 ///
 /// `401` / `403` status codes become [`AdapterError::Auth`];
 /// every other error becomes [`AdapterError::Http`].
+#[deprecated(since="0.1.0", note="Use `?` directly; `From<reqwest::Error> for AdapterError` is now implemented in erp-core)]
 pub fn reqwest_to_adapter(e: reqwest::Error) -> AdapterError {
     AdapterError::from(e)
 }
