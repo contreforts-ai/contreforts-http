@@ -9,7 +9,6 @@
 //!    everything else → `Http`), replacing the old `reqwest_to_adapter` free function.
 
 mod client;
-mod error;
 mod headers;
 mod response;
 
