@@ -15,7 +15,5 @@ mod response;
 
 pub use client::{build_client, build_client_with_builder};
 
-#[deprecated(since = "0.1.0", note = "Use `?` directly; `From<reqwest::Error> for AdapterError` is now implemented in erp-core")]
-pub use error::reqwest_to_adapter;
 pub use headers::{bearer_headers, custom_auth_headers};
 pub use response::handle_response;
