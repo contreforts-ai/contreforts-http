@@ -77,7 +77,7 @@ pub async fn handle_response(
 
     if status.is_success() {
         debug!(%method, %url, %status, "HTTP request successful");
-        return resp.json().await.map_err(reqwest_to_adapter);
+        return resp.json().await.map_err(AdapterError::from);
     }
 
     let code = status.as_u16();
@@ -110,15 +110,9 @@ pub async fn handle_response(
 ///
 /// This replaces the six identical `reqwest_err` free functions that previously
 /// lived in each adapter's `client.rs`.
+#[deprecated(note = "use `?` — From<reqwest::Error> for AdapterError is now implemented")]
 pub fn reqwest_to_adapter(e: reqwest::Error) -> AdapterError {
-    if e.status()
-        .map(|s| s.as_u16() == 401 || s.as_u16() == 403)
-        .unwrap_or(false)
-    {
-        AdapterError::Auth
-    } else {
-        AdapterError::Http(e.to_string())
-    }
+    AdapterError::from(e)
 }
 
 /// Convenience: build a [`header::HeaderMap`] with `Authorization: Bearer <token>`,
@@ -327,5 +321,19 @@ mod tests {
             h.get("private-token").unwrap().to_str().unwrap(),
             "glpat-xyz"
         );
+    }
+}
+
+pub struct ReqwestError(pub reqwest::Error);
+
+impl From<ReqwestError> for AdapterError {
+    fn from(e: ReqwestError) -> Self {
+        reqwest_to_adapter(e.0)
+    }
+}
+
+impl From<reqwest::Error> for ReqwestError {
+    fn from(e: reqwest::Error) -> Self {
+        ReqwestError(e)
     }
 }
