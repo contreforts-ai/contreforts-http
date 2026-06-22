@@ -1,6 +1,6 @@
 //! Shared HTTP plumbing for all `erp-*` adapter crates.
 //!
-//! Three things used to be copy-pasted across the six adapter `client.rs` files:
+//! Three things used to be copy-pasted across every adapter `client.rs` file:
 //!
 //! 1. **Client construction** – `reqwest::Client::builder()…build()` with per-adapter
 //!    headers but no shared timeout or `User-Agent`.
