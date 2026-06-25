@@ -70,9 +70,7 @@ mod tests {
     async fn handle_response_200_returns_json() {
         let server = MockServer::start().await;
         Mock::given(method("GET"))
-            .respond_with(
-                ResponseTemplate::new(200).set_body_json(serde_json::json!({ "id": 1 })),
-            )
+            .respond_with(ResponseTemplate::new(200).set_body_json(serde_json::json!({ "id": 1 })))
             .mount(&server)
             .await;
 
@@ -108,7 +106,13 @@ mod tests {
             .await
             .unwrap();
         let p: Payload = handle_response("GET", "/test", resp).await.unwrap();
-        assert_eq!(p, Payload { id: 42, name: "acme".into() });
+        assert_eq!(
+            p,
+            Payload {
+                id: 42,
+                name: "acme".into()
+            }
+        );
     }
 
     #[tokio::test]
