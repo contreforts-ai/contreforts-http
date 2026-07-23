@@ -2,7 +2,7 @@
 
 use reqwest::{header, Client};
 
-use erp_core::AdapterError;
+use contreforts_core::AdapterError;
 
 const USER_AGENT: &str = concat!("erp-sync/", env!("CARGO_PKG_VERSION"));
 

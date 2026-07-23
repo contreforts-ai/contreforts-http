@@ -6,7 +6,7 @@ the real history of that directory.
 
 It is **not independently buildable**: the manifest inherits `version`, `edition`
 and its dependency versions from the parent workspace
-(`version.workspace = true`, `erp-core = { workspace = true }`). Build and test it
+(`version.workspace = true`, `contreforts-core = { workspace = true }`). Build and test it
 from a checkout of the superproject, not from a standalone clone.
 
 ---
@@ -115,9 +115,9 @@ pointer means the merged work is invisible to everyone cloning erp-sync.
 
 ### Changes spanning several crates
 
-A change touching `erp-core` and its consumers is **N+1 pull requests** —
+A change touching `contreforts-core` and its consumers is **N+1 pull requests** —
 one per affected submodule, then one on the superproject bumping all the
-pointers together. Merge the `erp-core` PR first, then the consumers, then
+pointers together. Merge the `contreforts-core` PR first, then the consumers, then
 bump. The superproject bump commit is the atomic point: before it, nobody sees
 a half-applied change.
 
@@ -132,7 +132,7 @@ This repo and the superproject both have trackers. They are **not** interchangea
 
 **When in doubt, file it in `dslabs/erp-sync`.** That is the tracker everyone watches; moving an issue down into a crate later is cheaper than it sitting here unseen.
 
-Cross-repo work gets a **parent issue in the superproject and one sub-task per affected repo**. Link them with fully-qualified refs — `dslabs/erp-sync#15`, `contreforts/erp-core#1` — because a bare `#N` resolves to whichever repo you are reading. This Forgejo build exposes **no issue-dependencies API**, so ordering between sub-tasks lives in the issue text (`Blocked by:` / step *n* of *m*), not in structured metadata.
+Cross-repo work gets a **parent issue in the superproject and one sub-task per affected repo**. Link them with fully-qualified refs — `dslabs/erp-sync#15`, `contreforts/contreforts-core#1` — because a bare `#N` resolves to whichever repo you are reading. This Forgejo build exposes **no issue-dependencies API**, so ordering between sub-tasks lives in the issue text (`Blocked by:` / step *n* of *m*), not in structured metadata.
 
 Every issue carries exactly one `severity:` and one `kind:` label, from the same 10-label taxonomy as the superproject.
 

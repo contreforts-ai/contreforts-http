@@ -2,7 +2,7 @@
 
 use reqwest::header;
 
-use erp_core::AdapterError;
+use contreforts_core::AdapterError;
 
 /// Build a [`header::HeaderMap`] with:
 /// * `Authorization: Bearer <token>`
