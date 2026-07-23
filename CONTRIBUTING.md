@@ -1,7 +1,7 @@
 # Contributing
 
 This crate is a **submodule** of [`dslabs/erp-sync`](https://labs.deepthought-solutions.net/dslabs/erp-sync).
-It was extracted from `crates/erp-http` with `git subtree split`, so its history is
+It was extracted from `crates/contreforts-http` with `git subtree split`, so its history is
 the real history of that directory.
 
 It is **not independently buildable**: the manifest inherits `version`, `edition`
@@ -88,26 +88,26 @@ of the implementation, making `git bisect` meaningful.
 
 ## 4. Working on this crate from the superproject
 
-The submodule is a full clone — edit in place under `crates/erp-http/`, but mind
+The submodule is a full clone — edit in place under `crates/contreforts-http/`, but mind
 that a fresh submodule checkout is in **detached HEAD**.
 
 ```bash
 # 1. Get on a branch (never commit detached)
-cd crates/erp-http
+cd crates/contreforts-http
 git checkout develop && git pull
 
 # 2. Work
 git checkout -b <author>/<kind>/<slug>
-#    …edit, test from the superproject root: cargo test -p erp-http
+#    …edit, test from the superproject root: cargo test -p contreforts-http
 git commit -m "feat: …"
 git push -u origin HEAD
 #    open a PR against develop, get it merged
 
 # 3. Record the new commit in the superproject
 cd ../..
-git submodule update --remote crates/erp-http
-git add crates/erp-http
-git commit -m "chore(deps): bump erp-http to <short-sha>"
+git submodule update --remote crates/contreforts-http
+git add crates/contreforts-http
+git commit -m "chore(deps): bump contreforts-http to <short-sha>"
 ```
 
 Step 3 is not optional: the superproject pins an exact commit, so an unbumped
@@ -146,7 +146,7 @@ Every issue carries exactly one `severity:` and one `kind:` label, from the same
   ```bash
   cargo fmt --all
   cargo clippy --workspace --all-targets -- -D warnings
-  cargo test -p erp-http
+  cargo test -p contreforts-http
   ```
 
 ## 7. Data Access Policy

@@ -20,8 +20,8 @@ const DEFAULT_TIMEOUT_SECS: u64 = 30;
 ///
 /// ```rust,ignore
 /// // In an adapter's client.rs:
-/// let headers = erp_http::bearer_headers(&config.token)?;
-/// let http = erp_http::build_client(headers)?;
+/// let headers = contreforts_http::bearer_headers(&config.token)?;
+/// let http = contreforts_http::build_client(headers)?;
 /// ```
 pub fn build_client(default_headers: header::HeaderMap) -> Result<Client, AdapterError> {
     build_client_with_builder(Client::builder(), default_headers)
