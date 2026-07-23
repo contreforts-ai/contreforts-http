@@ -2,7 +2,7 @@ use reqwest::Response;
 use serde::de::DeserializeOwned;
 use tracing::{debug, error};
 
-use erp_core::AdapterError;
+use contreforts_core::AdapterError;
 
 /// Consume a [`Response`] and return either the deserialised body on success or a
 /// mapped [`AdapterError`] on failure.
