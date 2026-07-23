@@ -121,7 +121,22 @@ pointers together. Merge the `erp-core` PR first, then the consumers, then
 bump. The superproject bump commit is the atomic point: before it, nobody sees
 a half-applied change.
 
-## 5. Rust conventions
+## 5. Where to file issues
+
+This repo and the superproject both have trackers. They are **not** interchangeable.
+
+| File it in | When |
+|---|---|
+| **this repo** | The work is confined to this crate's internals — its own refactors, defects, public API. |
+| **`dslabs/erp-sync`** | Everything else: cross-crate work, architecture and product features, CI, release, the JS packages, and anything touching the in-tree crates (`erp-cli`, `erp-api`, `erp-ffi`, `apps/desktop`). |
+
+**When in doubt, file it in `dslabs/erp-sync`.** That is the tracker everyone watches; moving an issue down into a crate later is cheaper than it sitting here unseen.
+
+Cross-repo work gets a **parent issue in the superproject and one sub-task per affected repo**. Link them with fully-qualified refs — `dslabs/erp-sync#15`, `contreforts/erp-core#1` — because a bare `#N` resolves to whichever repo you are reading. This Forgejo build exposes **no issue-dependencies API**, so ordering between sub-tasks lives in the issue text (`Blocked by:` / step *n* of *m*), not in structured metadata.
+
+Every issue carries exactly one `severity:` and one `kind:` label, from the same 10-label taxonomy as the superproject.
+
+## 6. Rust conventions
 
 - `async` traits go through `async-trait`.
 - `thiserror` for library error types, `anyhow::Result` at call sites.
@@ -134,7 +149,7 @@ a half-applied change.
   cargo test -p erp-http
   ```
 
-## 6. Data Access Policy
+## 7. Data Access Policy
 
 **Only** the sync process (adapter `pull` calls) may fetch from external APIs.
 All reporting, dashboarding and browsing **must** read the central Oxigraph
