@@ -2,10 +2,10 @@ use reqwest::Response;
 use serde::de::DeserializeOwned;
 use tracing::{debug, error};
 
-use contreforts_core::AdapterError;
+use contreforts_core::ConnectorError;
 
 /// Consume a [`Response`] and return either the deserialised body on success or a
-/// mapped [`AdapterError`] on failure.
+/// mapped [`ConnectorError`] on failure.
 ///
 /// The type parameter `T` must implement [`DeserializeOwned`]; the response body
 /// is deserialised directly into `T` on 2xx, so callers no longer need to
@@ -19,17 +19,17 @@ use contreforts_core::AdapterError;
 ///
 /// HTTP semantics:
 ///
-/// | Status              | [`AdapterError`] variant                                            |
+/// | Status              | [`ConnectorError`] variant                                            |
 /// |---------------------|---------------------------------------------------------------------|
 /// | 2xx                 | *(success — returns the deserialised body)*                        |
-/// | 401, 403            | [`AdapterError::Auth`]                                             |
-/// | 404                 | [`AdapterError::NotFound`] `{ kind: method, id: url }`            |
-/// | anything else ≥ 400 | [`AdapterError::Http`] `("<method> <status> - <body> for URL: <url>")` |
+/// | 401, 403            | [`ConnectorError::Auth`]                                             |
+/// | 404                 | [`ConnectorError::NotFound`] `{ kind: method, id: url }`            |
+/// | anything else ≥ 400 | [`ConnectorError::Http`] `("<method> <status> - <body> for URL: <url>")` |
 pub async fn handle_response<T: DeserializeOwned>(
     method: &str,
     url: &str,
     resp: Response,
-) -> Result<T, AdapterError> {
+) -> Result<T, ConnectorError> {
     let status = resp.status();
 
     if status.is_success() {
@@ -42,19 +42,19 @@ pub async fn handle_response<T: DeserializeOwned>(
 
     if code == 401 || code == 403 {
         error!(%method, %url, %status, %body, "HTTP auth error");
-        return Err(AdapterError::Auth);
+        return Err(ConnectorError::Auth);
     }
 
     if code == 404 {
         error!(%method, %url, %status, %body, "HTTP not-found");
-        return Err(AdapterError::NotFound {
+        return Err(ConnectorError::NotFound {
             kind: method.into(),
             id: url.into(),
         });
     }
 
     error!(%method, %url, %status, %body, "HTTP error");
-    Err(AdapterError::Http(format!(
+    Err(ConnectorError::Http(format!(
         "{method} {status} - {body} for URL: {url}"
     )))
 }
@@ -129,7 +129,7 @@ mod tests {
             .await
             .unwrap();
         match handle_response::<Value>("GET", "/test", resp).await {
-            Err(AdapterError::Auth) => {}
+            Err(ConnectorError::Auth) => {}
             other => panic!("expected Auth, got {other:?}"),
         }
     }
@@ -148,7 +148,7 @@ mod tests {
             .await
             .unwrap();
         match handle_response::<Value>("GET", "/test", resp).await {
-            Err(AdapterError::Auth) => {}
+            Err(ConnectorError::Auth) => {}
             other => panic!("expected Auth, got {other:?}"),
         }
     }
@@ -167,7 +167,7 @@ mod tests {
             .await
             .unwrap();
         match handle_response::<Value>("GET", "/test", resp).await {
-            Err(AdapterError::NotFound { kind, id }) => {
+            Err(ConnectorError::NotFound { kind, id }) => {
                 assert_eq!(kind, "GET");
                 assert!(id.contains("/test"));
             }
@@ -189,7 +189,7 @@ mod tests {
             .await
             .unwrap();
         match handle_response::<Value>("POST", "/boom", resp).await {
-            Err(AdapterError::Http(msg)) => {
+            Err(ConnectorError::Http(msg)) => {
                 assert!(msg.contains("500"));
                 assert!(msg.contains("oops"));
             }

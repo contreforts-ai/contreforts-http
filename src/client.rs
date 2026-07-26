@@ -2,7 +2,7 @@
 
 use reqwest::{header, Client};
 
-use contreforts_core::AdapterError;
+use contreforts_core::ConnectorError;
 
 const USER_AGENT: &str = concat!("erp-sync/", env!("CARGO_PKG_VERSION"));
 
@@ -23,7 +23,7 @@ const DEFAULT_TIMEOUT_SECS: u64 = 30;
 /// let headers = contreforts_http::bearer_headers(&config.token)?;
 /// let http = contreforts_http::build_client(headers)?;
 /// ```
-pub fn build_client(default_headers: header::HeaderMap) -> Result<Client, AdapterError> {
+pub fn build_client(default_headers: header::HeaderMap) -> Result<Client, ConnectorError> {
     build_client_with_builder(Client::builder(), default_headers)
 }
 
@@ -32,13 +32,13 @@ pub fn build_client(default_headers: header::HeaderMap) -> Result<Client, Adapte
 pub fn build_client_with_builder(
     builder: reqwest::ClientBuilder,
     default_headers: header::HeaderMap,
-) -> Result<Client, AdapterError> {
+) -> Result<Client, ConnectorError> {
     builder
         .user_agent(USER_AGENT)
         .timeout(std::time::Duration::from_secs(DEFAULT_TIMEOUT_SECS))
         .default_headers(default_headers)
         .build()
-        .map_err(|e| AdapterError::Http(e.to_string()))
+        .map_err(|e| ConnectorError::Http(e.to_string()))
 }
 
 #[cfg(test)]
