@@ -6,9 +6,22 @@ use contreforts_core::ConnectorError;
 
 const USER_AGENT: &str = concat!("erp-sync/", env!("CARGO_PKG_VERSION"));
 
-/// Default request timeout (30 s). Individual adapters may override this by
-/// supplying their own [`reqwest::ClientBuilder`] and calling
-/// [`build_client_with_builder`] instead of [`build_client`].
+/// Request timeout applied to every client this module builds (30 s).
+///
+/// **Not overridable through [`build_client_with_builder`]**, and this comment
+/// used to say it was (`contreforts-http#4`): that function applies `.timeout()`
+/// *after* the caller's builder, so a `.timeout()` set on the builder handed in
+/// is silently replaced. Nothing has broken on it because the callers that set
+/// a timeout do it per-request with `RequestBuilder::timeout`, which this does
+/// not touch — but the comment told the next reader something false about the
+/// `ClientBuilder` path, which is the kind of thing that is only discovered
+/// after a request that should have had ten minutes was cut off at thirty
+/// seconds.
+///
+/// Use `RequestBuilder::timeout` for a per-request override. Making the
+/// client-level one configurable is a real change with a real question behind
+/// it — whether a shared default should be overridable at all — and is not
+/// this fix.
 const DEFAULT_TIMEOUT_SECS: u64 = 30;
 
 /// Build a [`reqwest::Client`] with:

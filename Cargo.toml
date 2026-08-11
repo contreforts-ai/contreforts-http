@@ -5,7 +5,12 @@ edition = "2021"
 
 [dependencies]
 contreforts-core = { workspace = true, features = ["reqwest"] }
-reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+# `stream`: contreforts-http#4 reads the body through `bytes_stream()` so the
+# size cap applies before the memory is spent, not after.
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
+# contreforts-http#4: `read_bounded` streams the body with `bytes_stream()`
+# rather than buffering it, so the cap applies before the memory is spent.
+futures = "0.3"
 serde = { workspace = true }
 serde_json = "1"
 tracing = "0.1"

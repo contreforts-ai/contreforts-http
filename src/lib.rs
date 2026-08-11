@@ -10,9 +10,11 @@
 
 mod client;
 mod headers;
+mod redact;
 mod response;
 
 pub use client::{build_client, build_client_with_builder};
 
 pub use headers::{bearer_headers, custom_auth_headers};
-pub use response::handle_response;
+pub use redact::{redact_url_secrets, REDACTED};
+pub use response::{handle_response, MAX_RESPONSE_BYTES};
